@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎄 Deck The Halls! Merry Christmas From The Woodburys!</title>
+  <style>
+    :root {
+      --red: #c41e3a;
+      --dark-red: #8b0000;
+      --green: #0b6b3a;
+      --light-green: #1a8f4a;
+      --gold: #d4af37;
+      --cream: #fff8f0;
+      --snow: #f5f5f5;
+      --card-bg: #ffffff;
+      --shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(180deg, #0b3d2e 0%, #1a5c3a 40%, #0b3d2e 100%);
+      color: #222;
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    /* Snowflakes */
+    .snow {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .flake {
+      position: absolute;
+      color: rgba(255,255,255,0.7);
+      font-size: 1rem;
+      animation: fall linear infinite;
+    }
+    @keyframes fall {
+      0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(110vh) rotate(360deg); opacity: 0.3; }
+    }
+
+    header {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 2.5rem 1rem 1.5rem;
+      background: linear-gradient(180deg, rgba(196,30,58,0.95), rgba(139,0,0,0.9));
+      color: white;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      border-bottom: 6px solid var(--gold);
+    }
+
+    header h1 {
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      letter-spacing: 0.02em;
+      text-shadow: 2px 2px 0 rgba(0,0,0,0.25);
+      margin-bottom: 0.4rem;
+    }
+
+    header p {
+      font-size: 1.1rem;
+      opacity: 0.95;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .holly {
+      font-size: 1.6rem;
+      margin: 0 0.3rem;
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 1rem 4rem;
+    }
+
+    .intro {
+      background: var(--cream);
+      border-radius: 16px;
+      padding: 1.5rem 1.75rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow);
+      border: 3px solid var(--gold);
+      text-align: center;
+    }
+
+    .intro p {
+      font-size: 1.05rem;
+      color: #333;
+    }
+
+    /* Game grid */
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .game-card {
+      background: var(--card-bg);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      border: 3px solid transparent;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .game-card:hover {
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 14px 32px rgba(0,0,0,0.18);
+      border-color: var(--gold);
+    }
+
+    .game-card .icon {
+      height: 110px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.2rem;
+      background: linear-gradient(135deg, #fff0f0, #e8f5e9);
+    }
+
+    .game-card h2 {
+      font-size: 1.25rem;
+      padding: 0.75rem 1rem 0.25rem;
+      color: var(--dark-red);
+      text-align: center;
+    }
+
+    .game-card .meta {
+      padding: 0 1rem 1rem;
+      font-size: 0.9rem;
+      color: #555;
+      text-align: center;
+    }
+
+    .game-card .meta span {
+      display: inline-block;
+      background: #f0f0f0;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      margin: 0.15rem;
+      font-size: 0.82rem;
+    }
+
+    /* Detail sections */
+    .game-detail {
+      display: none;
+      background: var(--cream);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow);
+      border: 4px solid var(--red);
+      scroll-margin-top: 1rem;
+    }
+
+    .game-detail.active {
+      display: block;
+      animation: fadeIn 0.35s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .game-detail h2 {
+      color: var(--dark-red);
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .game-detail .quick-facts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin: 1rem 0 1.5rem;
+    }
+
+    .fact {
+      background: white;
+      border: 2px solid var(--green);
+      border-radius: 12px;
+      padding: 0.5rem 0.9rem;
+      font-size: 0.95rem;
+    }
+
+    .fact strong {
+      color: var(--green);
+    }
+
+    .game-detail h3 {
+      color: var(--green);
+      margin: 1.4rem 0 0.5rem;
+      font-size: 1.2rem;
+    }
+
+    .game-detail ol, .game-detail ul {
+      margin-left: 1.4rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .game-detail li {
+      margin-bottom: 0.35rem;
+    }
+
+    .game-detail p {
+      margin-bottom: 0.7rem;
+    }
+
+    .back-btn {
+      display: inline-block;
+      margin-top: 1.5rem;
+      background: var(--red);
+      color: white;
+      padding: 0.6rem 1.3rem;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    .back-btn:hover {
+      background: var(--dark-red);
+    }
+
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 1.5rem;
+      color: rgba(255,255,255,0.85);
+      font-size: 0.95rem;
+    }
+
+    footer a {
+      color: var(--gold);
+    }
+
+    /* Mobile tweaks */
+    @media (max-width: 500px) {
+      .game-card .icon { height: 90px; font-size: 2.6rem; }
+      .game-detail { padding: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="snow" id="snow"></div>
+
+  <header>
+    <h1><span class="holly">🎄</span> Deck The Halls! Merry Christmas From The Woodburys! <span class="holly">🎄</span></h1>
+    <p>Classic face-card favorites for cozy holiday gatherings — rules, player counts &amp; ages all in one place!</p>
+  </header>
+
+  <main>
+    <div class="intro">
+      <p>Click any game below to see how many players you need, how many decks, the best age range, and the full rules. Perfect for kids, grandparents, and everyone in between!</p>
+    </div>
+
+    <div class="games-grid" id="games-grid">
+      <!-- Cards will be generated / are static below -->
+      <a href="#nertz" class="game-card" data-game="nertz">
+        <div class="icon">⚡🃏</div>
+        <h2>Nertz</h2>
+        <div class="meta">
+          <span>2–8 players</span>
+          <span>1 deck each</span>
+          <span>Ages 8+</span>
+        </div>
+      </a>
+
+      <a href="#hand-and-foot" class="game-card" data-game="hand-and-foot">
+        <div class="icon">✋🦶</div>
+        <h2>Hand and Foot</h2>
+        <div class="meta">
+          <span>2–6 players</span>
+          <span>5–7 decks</span>
+          <span>Ages 10+</span>
+        </div>
+      </a>
+
+      <a href="#egyptian-rummy" class="game-card" data-game="egyptian-rummy">
+        <div class="icon">🐀🃏</div>
+        <h2>Egyptian Rummy<br><small style="font-size:0.75em;font-weight:normal">(Egyptian Ratscrew)</small></h2>
+        <div class="meta">
+          <span>2–8 players</span>
+          <span>1 deck</span>
+          <span>Ages 8+</span>
+        </div>
+      </a>
+
+      <a href="#speed" class="game-card" data-game="speed">
+        <div class="icon">💨🃏</div>
+        <h2>Speed</h2>
+        <div class="meta">
+          <span>2 players</span>
+          <span>1 deck</span>
+          <span>Ages 5+</span>
+        </div>
+      </a>
+
+      <a href="#slapjack" class="game-card" data-game="slapjack">
+        <div class="icon">✋🃏</div>
+        <h2>Slapjack</h2>
+        <div class="meta">
+          <span>2–8 players</span>
+          <span>1 deck</span>
+          <span>Ages 4+</span>
+        </div>
+      </a>
+
+      <a href="#go-fish" class="game-card" data-game="go-fish">
+        <div class="icon">🐟🃏</div>
+        <h2>Go Fish</h2>
+        <div class="meta">
+          <span>2–6 players</span>
+          <span>1 deck</span>
+          <span>Ages 4+</span>
+        </div>
+      </a>
+
+      <a href="#fruit-salad" class="game-card" data-game="fruit-salad">
+        <div class="icon">🥗🃏</div>
+        <h2>Fruit Salad<br><small style="font-size:0.75em;font-weight:normal">(Canadian Salad)</small></h2>
+        <div class="meta">
+          <span>3–6 players</span>
+          <span>1–2 decks</span>
+          <span>Ages 8+</span>
+        </div>
+      </a>
+
+      <a href="#war" class="game-card" data-game="war">
+        <div class="icon">⚔️🃏</div>
+        <h2>War</h2>
+        <div class="meta">
+          <span>2–4 players</span>
+          <span>1 deck</span>
+          <span>Ages 4+</span>
+        </div>
+      </a>
+
+      <a href="#trash" class="game-card" data-game="trash">
+        <div class="icon">🗑️🃏</div>
+        <h2>Trash</h2>
+        <div class="meta">
+          <span>2–6 players</span>
+          <span>1 deck</span>
+          <span>Ages 6+</span>
+        </div>
+      </a>
+
+      <a href="#hearts" class="game-card" data-game="hearts">
+        <div class="icon">♥️🃏</div>
+        <h2>Hearts</h2>
+        <div class="meta">
+          <span>3–6 players</span>
+          <span>1 deck</span>
+          <span>Ages 8+</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- ========== NERTZ ========== -->
+    <section id="nertz" class="game-detail">
+      <h2>⚡ Nertz</h2>
+      <div class="quick-facts">
+        <div class="fact"><strong>Players:</strong> 2–8 (best 3–5)</div>
+        <div class="fact"><strong>Decks:</strong> 1 standard deck <em>per player</em> (different backs required)</div>
+        <div class="fact"><strong>Ages:</strong> 8+</div>
+        <div class="fact"><strong>Time:</strong> 20–40 min</div>
+      </div>
+      <p>A wild, simultaneous multiplayer solitaire race. Everyone plays at the same time trying to empty their “Nertz pile” first while building shared foundation piles in the middle.</p>
+
+      <h3>Setup</h3>
+      <ol>
+        <li>Each player gets their own 52-card deck with a unique back design.</li>
+        <li>Deal 13 cards face-down as the <strong>Nertz pile</strong>; turn the top card face-up.</li>
+        <li>Deal 4 cards face-up in a row as <strong>work piles</strong>.</li>
+        <li>The rest of the deck is the <strong>stock</strong> (held face-down).</li>
+        <li>The center of the table is for shared <strong>foundation piles</strong> (started with Aces).</li>
+      </ol>
+
+      <h3>How to Play</h3>
+      <ul>
+        <li>Someone yells “Go!” and everyone plays at once.</li>
+        <li>Play the top Nertz card or work-pile cards onto foundations (ascending, same suit: A→2→…→K) or onto your own work piles (descending, alternating colors).</li>
+        <li>Turn three cards at a time from your stock; the top one is available.</li>
+        <li>You may only use one hand.</li>
+        <li>When you empty your Nertz pile, shout <strong>“Nertz!”</strong> — play stops.</li>
+      </ul>
+
+      <h3>Scoring</h3>
+      <p>+1 point for every card you played to the foundations. –2 points for every card left in your Nertz pile. First to an agreed total (often 100) wins.</p>
+      <a href="#" class="back-btn" onclick="hideAll(); return false;">← Back to all games</a>
+    </section>
+
+    <!-- ========== HAND AND FOOT ========== -->
+    <section id="hand-and-foot" class="game-detail">
+      <h2>✋🦶 Hand and Foot</h2>
+      <div class="quick-facts">
+        <div class="fact"><strong>Players:</strong> 2–6 (best 4 in partnerships)</div>
+        <div class="fact"><strong>Decks:</strong> 5 decks + jokers for 4 players (add 1 deck per extra player)</div>
+        <div class="fact"><strong>Ages:</strong> 10+</div>
+        <div class="fact"><strong>Time:</strong> 1–2+ hours</div>
+      </div>
+      <p>A Canasta-family game where each player has two piles: the Hand (played first) and the Foot (played after the Hand is gone). The goal is to make “books” (melds of 7 cards) and go out.</p>
+
+      <h3>Setup</h3>
+      <ol>
+        <li>Shuffle 5–7 decks together (including jokers).</li>
+        <li>Deal each player two piles of 11 cards: the <strong>Hand</strong> (pick up) and the <strong>Foot</strong> (leave face-down).</li>
+        <li>Place the rest as the stock; turn one card to start the discard pile.</li>
+      </ol>
+
+      <h3>Key Rules</h3>
+      <ul>
+        <li>Jokers and 2s are wild.</li>
+        <li>Red 3s are bonus cards; black 3s are blockers.</li>
+        <li>You must meet a minimum point threshold to “open” (start melding) — thresholds rise each round.</li>
+        <li>A <strong>clean book</strong> has no wilds; a <strong>dirty book</strong> has wilds.</li>
+        <li>After finishing your Hand, pick up your Foot and continue.</li>
+        <li>To go out you usually need at least one clean and one dirty book (partnerships share requirements).</li>
+      </ul>
+      <p>Play four rounds with rising minimums. Highest score wins.</p>
+      <a href="#" class="back-btn" onclick="hideAll(); return false;">← Back to all games</a>
+    </section>
+
+    <!-- ========== EGYPTIAN RUMMY / RATSREW ========== -->
+    <section id="egyptian-rummy" class="game-detail">
+      <h2>🐀 Egyptian Rummy (Egyptian Ratscrew)</h2>
+      <div class="quick-facts">
+        <div class="fact"><strong>Players:</strong> 2–8 (best 3–6)</div>
+        <div class="fact"><strong>Decks:</strong> 1 standard deck (2 decks for larger groups)</div>
+        <div class="fact"><strong>Ages:</strong> 8+</div>
+        <div class="fact"><strong>Time:</strong> 15–45 min</div>
+      </div>
+      <p>A fast, physical slap game that mixes face-card challenges with pattern-slapping. Also known as Egyptian Ratscrew, Egyptian War, or Rat Slap.</p>
+
+      <h3>Setup</h3>
+      <ol>
+        <li>Deal the entire deck face-down as evenly as possible. Players may not look at their cards.</li>
+        <li>Players keep a face-down stack in front of them.</li>
+      </ol>
+
+      <h3>How to Play</h3>
+      <ul>
+        <li>Players take turns flipping the top card onto a central pile (flip away from yourself so everyone sees it at once).</li>
+        <li>When a <strong>face card or Ace</strong> is played, the next player has a limited number of chances to play another face/Ace:
+          <ul>
+            <li>Ace → 4 chances</li>
+            <li>King → 3 chances</li>
+            <li>Queen → 2 chances</li>
+            <li>Jack → 1 chance</li>
+          </ul>
+        </li>
+        <li>If they fail, the player who played the face card takes the whole pile.</li>
+        <li>If they succeed, the challenge continues to the next player.</li>
+      </ul>
+
+      <h3>Slapping</h3>
+      <p>Anyone may slap the pile when a valid pattern appears. Common patterns:</p>
+      <ul>
+        <li><strong>Double</strong> — two cards of the same rank in a row</li>
+        <li><strong>Sandwich</strong> — same rank with exactly one card between them</li>
+        <li><strong>Top-Bottom</strong> — the new card matches the very first card of the pile</li>
+        <li>(House rules often add: Marriage = King+Queen, Tens = two cards that add to 10, etc.)</li>
+      </ul>
+      <p>First valid slap wins the pile. A false slap usually costs one card placed under the pile. First player to collect all cards wins.</p>
+      <a href="#" class="back-btn" onclick="hideAll(); return false;">← Back to all games</a>
+    </section>
+
+    <!-- ========== SPEED ========== -->
+    <section id="speed" class="game-detail">
+      <h2>💨 Speed</h2>
+      <div class="quick-facts">
+        <div class="fact"><strong>Players:</strong> 2</div>
+        <div class="fact"><strong>Decks:</strong> 1 standard deck</div>
+        <div class="fact"><strong>Ages:</strong> 5+</div>
+        <div class="fact"><strong>Time:</strong> 5–15 min</div>
+      </div>
+      <p>A pure race with no turns. Both players play simultaneously, trying to empty their cards onto two shared center piles.</p>
+
+      <h3>Setup</h3>
+      <ol>
+        <li>Each player gets 20 cards: 15 face-down as a draw pile and 5 in hand.</li>
+        <li>The remaining 12 cards form two 5-card side piles and two single face-down starter cards in the center.</li>
+        <li>Both players flip the two center cards at the same time to begin.</li>
+      </ol>
+
+      <h3>How to Play</h3>
+      <ul>
+        <li>Play a card from your hand onto either center pile if it is one rank higher or one rank lower (suits don’t matter). Ace connects to both King and 2.</li>
+        <li>Whenever your hand drops below 5, draw from your draw pile to refill to 5.</li>
+        <li>If neither player can play, both flip the top card of their side pile onto the center piles to restart.</li>
+        <li>First player to play their last card shouts <strong>“Speed!”</strong> and wins the round.</li>
+      </ul>
+      <p>Best of 3 or 5 is common. Great for kids once they know card ranks.</p>
+      <a href="#" class="back-btn" onclick="hideAll(); return false;">← Back to all games</a>
+    </section>
+
+    <!-- ========== SLAPJACK ========== -->
+    <section id="slapjack" class="game-detail">
+      <h2>✋ Slapjack</h2>
+      <div class="quick-facts">
+        <div class="fact"><strong>Players:</strong> 2–8 (best 3–5)</div>
+        <div class="fact"><strong>Decks:</strong> 1 standard deck</div>
+        <div class="fact"><strong>Ages:</strong> 4+</div>
+        <div class="fact"><strong>Time:</strong> 10–20 min</div>
+      </div>
+      <p>The classic reflex game: flip cards into a pile and race to slap every Jack.</p>
+
+      <h3>Setup</h3>
+      <ol>
+        <li>Deal the entire deck face-down as evenly as possible. Players do not look at their cards.</li>
+        <li>Each player keeps a neat face-down stack.</li>
+      </ol>
+
+      <h3>How to Play</h3>
+      <ul>
+        <li>Players take turns flipping the top card of their stack face-up onto a central pile (flip away from yourself).</li>
+        <li>When a <strong>Jack</strong> appears, everyone races to slap it. The first hand on the Jack wins the entire central pile and adds it face-down under their own stack.</li>
+        <li>If you slap a non-Jack, give one card to the player who flipped that card (common penalty).</li>
+        <li>A player who runs out of cards stays in and can still slap the next Jack to get back in.</li>
+      </ul>
+      <p>The player who collects all 52 cards wins. Perfect for young children.</p>
+      <a href="#" class="back-btn" onclick="hideAll(); return false;">← Back to all games</a>
+    </section>
+
+    <!-- ========== GO FISH ========== -->
+    <section id="go-fish" class="game-detail">
+      <h2>🐟 Go Fish</h2>
+      <div class="quick-facts">
+        <div class="fact"><strong>Players:</strong> 2–6 (best 3–5)</div>
+        <div class="fact"><strong>Decks:</strong> 1 standard deck</div>
+        <div class="fact"><strong>Ages:</strong> 4+</div>
+        <div class="fact"><strong>Time:</strong> 10–20 min</div>
+      </div>
+      <p>The classic matching game. Collect “books” of four cards of the same rank by asking opponents or fishing from the pond.</p>
+
+      <h3>Setup</h3>
+      <ol>
+        <li>Deal 7 cards to each player if 2–3 players; deal 5 cards if 4–6 players.</li>
+        <li>Place the remaining cards face-down in the center as the “pond” (draw pile).</li>
+      </ol>
+
+      <h3>How to Play</h3>
+      <ul>
+        <li>On your turn, ask any other player for a rank you already hold at least one of (e.g., “Do you have any 8s?”).</li>
+        <li>If they have any, they must give you <em>all</em> of them and you get another turn.</li>
+        <li>If they have none, they say <strong>“Go Fish!”</strong> and you draw the top card of the pond. If you draw the rank you asked for, you may take another turn (common house rule).</li>
+        <li>Whenever you collect all four cards of a rank, lay them down as a book.</li>
+      </ul>
+      <p>Game ends when all books are made or the pond is empty. Most books wins. For younger kids, play with pairs instead of books of four.</p>
+      <a href="#" class="back-btn" onclick="hideAll(); return false;">← Back to all games</a>
+    </section>
+
+    <!-- ========== FRUIT SALAD ========== -->
+    <section id="fruit-salad" class="game-detail">
+      <h2>🥗 Fruit Salad (Canadian Salad / Wisconsin Scramble)</h2>
+      <div class="quick-facts">
+        <div class="fact"><strong>Players:</strong> 3–6 (classic is 4)</div>
+        <div class="fact"><strong>Decks:</strong> 1 standard deck (adjust for odd numbers; 2 decks for larger groups)</div>
+        <div class="fact"><strong>Ages:</strong> 8+</div>
+        <div class="fact"><strong>Time:</strong> 45–90 min</div>
+      </div>
+      <p>A trick-taking game played over six hands, each with a different scoring goal. Players usually try to <em>avoid</em> taking certain cards or tricks. Lowest total score wins.</p>
+
+      <h3>Setup</h3>
+      <ol>
+        <li>Use a 52-card deck (remove cards as needed so everyone receives the same number).</li>
+        <li>Deal all cards out. Aces high. No trump.</li>
+      </ol>
+
+      <h3>The Six Hands (scoring changes each time)</h3>
+      <ol>
+        <li><strong>Tricks</strong> — each trick taken is worth 10 points (penalty).</li>
+        <li><strong>Hearts</strong> — each heart taken is worth 10 points.</li>
+        <li><strong>Queens</strong> — each Queen is worth 25 points.</li>
+        <li><strong>King of Spades</strong> — the King of Spades is worth 100 points.</li>
+        <li><strong>Last Trick</strong> — the player who takes the last trick scores 100 points.</li>
+        <li><strong>Everything</strong> — all of the above penalties apply at once.</li>
+      </ol>
+
+      <h3>Play</h3>
+      <p>Player to the left of the dealer leads any card. Others must follow suit if possible. Highest card of the led suit wins the trick and leads the next. After six hands, the lowest cumulative score wins.</p>
+      <a href="#" class="back-btn" onclick="hideAll(); return false;">← Back to all games</a>
+    </section>
+
+    <!-- ========== WAR ========== -->
+    <section id="war" class="game-detail">
+      <h2>⚔️ War</h2>
+      <div class="quick-facts">
+        <div class="fact"><strong>Players:</strong> 2 (works with 3–4)</div>
+        <div class="fact"><strong>Decks:</strong> 1 standard deck</div>
+        <div class="fact"><strong>Ages:</strong> 4+</div>
+        <div class="fact"><strong>Time:</strong> 10–40 min</div>
+      </div>
+      <p>The purest luck-based card game. Flip cards, higher card wins. Ties start a “war.”</p>
+
+      <h3>Setup</h3>
+      <ol>
+        <li>Deal the entire deck face-down evenly (26 each for 2 players). Players do not look at their cards.</li>
+        <li>Each player keeps a face-down stack.</li>
+      </ol>
+
+      <h3>How to Play</h3>
+      <ul>
+        <li>Both players simultaneously flip the top card of their stack.</li>
+        <li>Higher rank wins both cards (Aces high; suits ignored). Winner places them face-down at the bottom of their stack.</li>
+        <li>If the ranks are equal → <strong>War!</strong> Each player places three cards face-down, then one card face-up. Highest face-up card wins the entire pile (including the original tied cards).</li>
+        <li>If the war cards also tie, repeat the war process.</li>
+      </ul>
+      <p>The player who collects all 52 cards wins. Games can be long; many families play to a time limit and count cards.</p>
+      <a href="#" class="back-btn" onclick="hideAll(); return false;">← Back to all games</a>
+    </section>
+
+    <!-- ========== TRASH ========== -->
+    <section id="trash" class="game-detail">
+      <h2>🗑️ Trash (also called Garbage)</h2>
+      <div class="quick-facts">
+        <div class="fact"><strong>Players:</strong> 2–6</div>
+        <div class="fact"><strong>Decks:</strong> 1 standard deck (2 decks for 5–6 players)</div>
+        <div class="fact"><strong>Ages:</strong> 6+</div>
+        <div class="fact"><strong>Time:</strong> 15–30 min</div>
+      </div>
+      <p>A fun, fast filling game where you try to complete a sequence of cards from Ace (or 1) through 10 in order. First to finish the final level wins.</p>
+
+      <h3>Setup</h3>
+      <ol>
+        <li>Each player is dealt 10 cards face-down in a row (these are their “spots”).</li>
+        <li>The remaining cards form a shared draw pile; turn the top card face-up to start a discard pile.</li>
+        <li>Players may peek at their own cards only when replacing them.</li>
+      </ol>
+
+      <h3>How to Play</h3>
+      <ul>
+        <li>On your turn, draw the top card of the draw pile <em>or</em> take the top discard.</li>
+        <li>If the card is an Ace through 10, you may place it in the matching position in your row (Ace/1 in the first spot, 2 in the second, … 10 in the tenth). Flip the card that was already there face-up into the discard pile (or keep playing if it’s useful).</li>
+        <li>Kings are wild and can fill any remaining empty spot.</li>
+        <li>Queens and Jacks are usually unplayable (trash) — discard them and end your turn.</li>
+        <li>If you cannot or choose not to play the drawn card, discard it and your turn ends.</li>
+        <li>When you fill all 10 spots, you call “Trash!” and the round ends. Everyone counts how many cards they still need; that becomes their next starting hand size (one fewer card each round).</li>
+      </ul>
+      <p>Continue rounds until a player successfully completes a row of only 1 card (or whatever final target you agree on). That player wins the game.</p>
+      <a href="#" class="back-btn" onclick="hideAll(); return false;">← Back to all games</a>
+    </section>
+
+    <!-- ========== HEARTS ========== -->
+    <section id="hearts" class="game-detail">
+      <h2>♥️ Hearts</h2>
+      <div class="quick-facts">
+        <div class="fact"><strong>Players:</strong> 3–6 (best with 4)</div>
+        <div class="fact"><strong>Decks:</strong> 1 standard deck</div>
+        <div class="fact"><strong>Ages:</strong> 8+</div>
+        <div class="fact"><strong>Time:</strong> 30–60 min</div>
+      </div>
+      <p>A classic trick-taking game of avoidance. Try not to take hearts (1 point each) or the Queen of Spades (13 points). Lowest score after the agreed number of hands (or when someone reaches 100) wins.</p>
+
+      <h3>Setup</h3>
+      <ol>
+        <li>Deal the entire 52-card deck as evenly as possible (13 each for 4 players).</li>
+        <li>In most 4-player games there is a passing phase: each player passes 3 cards to another player (left, right, across, or no pass — rotating each hand).</li>
+      </ol>
+
+      <h3>How to Play</h3>
+      <ul>
+        <li>The player holding the 2 of Clubs leads the first trick (common rule).</li>
+        <li>Players must follow suit if able. Highest card of the led suit wins the trick and leads the next.</li>
+        <li>Hearts may not be led until they have been “broken” (played on a previous trick) unless a player has only hearts left.</li>
+        <li>At the end of the hand, score 1 point for each heart taken and 13 points for the Queen of Spades.</li>
+        <li><strong>Shooting the Moon:</strong> If one player takes all 13 hearts <em>and</em> the Queen of Spades, they score 0 and everyone else scores 26 (or the shooter scores –26 — house rule).</li>
+      </ul>
+      <p>Play continues until a player reaches or exceeds 100 points. Lowest total wins. Great strategy game once everyone knows the basics.</p>
+      <a href="#" class="back-btn" onclick="hideAll(); return false;">← Back to all games</a>
+    </section>
+  </main>
+
+  <footer>
+    <p>🎄 Made for family Christmas fun • Shuffle up and deal! 🎄</p>
+  </footer>
+
+  <script>
+    // Simple snow
+    const snow = document.getElementById('snow');
+    const symbols = ['❄', '❅', '❆', '•'];
+    for (let i = 0; i < 40; i++) {
+      const flake = document.createElement('div');
+      flake.className = 'flake';
+      flake.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+      flake.style.left = Math.random() * 100 + 'vw';
+      flake.style.fontSize = (0.6 + Math.random() * 1.2) + 'rem';
+      flake.style.animationDuration = (8 + Math.random() * 12) + 's';
+      flake.style.animationDelay = (Math.random() * 8) + 's';
+      snow.appendChild(flake);
+    }
+
+    // Show / hide details
+    function hideAll() {
+      document.querySelectorAll('.game-detail').forEach(el => el.classList.remove('active'));
+      document.getElementById('games-grid').style.display = 'grid';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.querySelectorAll('.game-card').forEach(card => {
+      card.addEventListener('click', function(e) {
+        e.preventDefault();
+        const id = this.getAttribute('data-game');
+        hideAll();
+        document.getElementById('games-grid').style.display = 'none';
+        const detail = document.getElementById(id);
+        detail.classList.add('active');
+        detail.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    // Support direct hash links
+    if (location.hash) {
+      const id = location.hash.slice(1);
+      const el = document.getElementById(id);
+      if (el && el.classList.contains('game-detail')) {
+        document.getElementById('games-grid').style.display = 'none';
+        el.classList.add('active');
+      }
+    }
+  </script>
+</body>
+</html>
